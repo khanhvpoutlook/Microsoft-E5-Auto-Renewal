@@ -1,0 +1,24 @@
+name: E5 Auto Renew
+on:
+  schedule:
+    - cron: "0 */6 * * 1-5" # Chạy mỗi 6 giờ, thứ Hai đến thứ Sáu
+  workflow_dispatch: # Cho phép chạy thủ công
+jobs:
+  renew:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: "3.12"
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install requests
+      - name: Run script
+        env:
+          CONFIG_ID: ${{ secrets.CONFIG_ID }}
+          CONFIG_KEY: ${{ secrets.CONFIG_KEY }}
+          REFRESH_TOKEN: ${{ secrets.REFRESH_TOKEN }}
+        run: python main.py
